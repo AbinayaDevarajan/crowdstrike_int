@@ -6,6 +6,8 @@
 # Vagrant
 .vagrant/
 
+.venv_test/
+
 # Mac/OSX
 .DS_Store
 

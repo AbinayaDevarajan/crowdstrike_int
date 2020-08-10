@@ -13,7 +13,7 @@ def colors(palette):
       - name: palette
         in: path
         type: string
-        enum: ['all', 'rgb', 'cmyk']
+        enum: ['all', 'rgb', 'cmyk','test']
         required: true
         default: all
     definitions:
@@ -36,7 +36,8 @@ def colors(palette):
     """
     all_colors = {
         'cmyk': ['cian', 'magenta', 'yellow', 'black'],
-        'rgb': ['red', 'green', 'blue']
+        'rgb': ['red', 'green', 'blue'],
+        'test':['a','b','c','d']
     }
     if palette == 'all':
         result = all_colors
