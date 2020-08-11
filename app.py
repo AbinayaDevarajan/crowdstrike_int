@@ -153,12 +153,22 @@ app.add_url_rule(
 )
 
 
-@app.route('/v1/files/<int:file_id>/downloads', endpoint='should_be_v1_only_downloads')
+@app.route('/v1/files/<int:file_id>/downloadspec', endpoint='should_be_v1_only_downloads')
 @swag_from('file_download_specs.yml')
-def fromfile_decorated(file_id):
+def get_download_specification(file_id):
     return jsonify({'file_name': "file_name"})
 
 
+@app.route('/v1/files/<int:file_id>/executespec', endpoint='should_be_v1_only_execution')
+@swag_from('file_execution_specs.yml')
+def get_execution_specification(file_id):
+    return jsonify({'file_name': "file_name"})
+
+
+@app.route('/v1/files/<int:file_id>/deletespec', endpoint='should_be_v1_only_deletion')
+@swag_from('file_deletion_specs.yml')
+def get_deletion_specification(file_id):
+    return jsonify({'file_name': "file_name"})
 
 @app.after_request
 def allow_origin(response):

@@ -1,0 +1,39 @@
+This is the summary defined in yaml file
+First line is the summary
+All following lines until the hyphens is added to description
+the format of the first lines until 3 hyphens will be not yaml compliant
+but everything below the 3 hyphens should be.
+YAML files are Unicode - UTF-16 or UTF-8 (default) encoded.
+This line contains a UTF-8-encoded character: ☮
+There are also UTF-8-encoded characters in the following spec.
+---
+
+tags:
+  - files
+parameters:
+  - in: path
+    name: file_id
+    description: ID of file (type any number)
+    type: integer
+    required: true
+definitions:
+  Deletion_item:
+    type: object
+    properties:
+      file_id:
+        type: integer
+      file_name:
+        type: integer
+      file_description:
+        type: string
+      platform:
+        type: string
+      creation_date:
+        type: date-time
+responses:
+  200:
+    description: list of entities that Deleted this file
+    schema:
+      $ref: '#/definitions/File'
+    examples:
+      -  {"name": "Fil01", "file_id": file_id,"platform" :"platform1", "creation_date":'12/10/2020-10:04:00'}
