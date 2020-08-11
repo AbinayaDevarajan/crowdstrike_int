@@ -388,7 +388,12 @@ def add_metadata(item_type,file_id):
       204:
          description: Error inserting the value
     """
+    data = {
+        "rec_response": 200
+    }
     print(request.data)
+    # do the necessary updates to the database
+    return jsonify(data)
 
 """
 This is to add cross origin site requests
