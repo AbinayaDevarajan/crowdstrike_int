@@ -3,11 +3,14 @@ from flasgger import Swagger
 from flasgger.utils import swag_from
 from flask.views import MethodView
 import sys
+from collections import namedtuple
+import collections
 sys.path.append('./utils')
 sys.path.append('./conf')
 sys.path.append('./common')
 from redis_utils import RedisUtils
 from config_utils import ConfigurationReader
+import json
 """
 
 HMSET 100 file_id 100 file_name f_100 description desc1 platform A creation_time 11-08-2020-10:00:00
@@ -82,6 +85,44 @@ app.config['SWAGGER'] = {
 }
 
 
+class DictionaryObject(object):
+    """
+    Turns a python dictionary into a class
+    """
+
+    def __init__(self, dictionary, class_name="object"):
+        """Constructor"""
+        self.class_name = class_name
+        for a, b in dictionary.items():
+            if isinstance(b, (list, tuple)):
+                setattr(self, a.lower(), [
+                    DictionaryObject(x) if isinstance(x, dict) else x
+                    for x in b
+                ])
+            else:
+                setattr(self, a.lower(),
+                        DictionaryObject(b) if isinstance(b, dict) else b)
+
+    def covert_to_flat_dict(self, d, parent_key='', sep='_', to_upper=False):
+        """
+            convert the nested dictionary to a flat dictionary
+        """
+        items = []
+        for k, v in d.items():
+            new_key = parent_key + sep + k if parent_key else k
+            if to_upper:
+                new_key = new_key.upper()
+            if isinstance(v, collections.MutableMapping):
+                items.extend(
+                    self.covert_to_flat_dict(
+                        v, new_key, sep=sep, to_upper=to_upper).items())
+            else:
+                items.append((new_key, v))
+        return dict(items)
+
+    def __repr__(self):
+        """"""
+        return "<{}: {}>".format(self.class_name, self.__dict__)
 
 swag = Swagger(app)  # you can pass config here Swagger(config={})
 
@@ -228,6 +269,35 @@ def get_metadata_specification(file_id):
                     "platform": "platform1", "creation_date": '12/10/2020-10:04:00'}
             ]}
     )
+
+"""
+ Implementation of Given a file, list all files that downloaded/executed/deleted it
+
+"""
+@app.route('/v1/files/<int:file_id>/metadataspecR', endpoint='should_be_v1_only_metadataR')
+@swag_from('file_metadata_specs.yml')
+def get_metadata_specification_v2(file_id):
+
+    output_result ={}
+    relation_markers =["downloaded_by","executed_by","deleted_by"]
+    for item in relation_markers:
+        try:
+            output_arr = []
+            print(str(item)+":"+str(file_id))
+            stored_values = r.connection.lrange(str(item)+":"+str(file_id),0,-1)
+            for i in stored_values:
+
+                output_arr.append(r.connection.hgetall(i))
+            output_result[item] =output_arr
+            
+            print(output_result)
+        except Exception as e:
+            print("specified relation doesnt exist",str(e))
+
+  
+    return json.dumps(output_result)
+
+
 
 """
 This is to add cross origin site requests
