@@ -466,7 +466,7 @@ def upsert_metadata(method_type,item_type, file_id):
                 $ref: '#/definitions/rec_metadata'
     responses:
       200:
-        description: success string if metadata insert is successful
+        description: success string if metadata upsertion is successful
         schema:
           id: rec_response
           properties:
@@ -484,6 +484,133 @@ def upsert_metadata(method_type,item_type, file_id):
     # If the type == 'ADD': do the logic for add else update using the body parameters
     # do the necessary updates to the database
     return jsonify(data)
+
+
+@app.route("/v1/metadata/delete/<item_type>/<file_id>/", methods=['POST'],
+           endpoint="should_be_v1_only_metadata_delete")
+def delete_metadata(item_type, file_id):
+    """
+    Deleting the metadata
+    Get a single item_type as  for the target_type
+    ---
+    tags:
+      - metadata
+    parameters:
+
+      - name: item_type
+        in: path
+        description: currently only "deleted_by , downloaded_by , executed_by" is supported
+        required: true
+        type: string
+        default: downloaded_by
+      - name: file_id
+        in: path
+        description: currently only "file_id" is supported
+        required: true
+        type: string
+        default: 101
+    
+
+      - in: body
+        name: body
+        schema:
+          id: rec_metadata
+          required:
+            - type
+            - type_item
+          properties:
+            type:
+              type: integer
+              description: string which is out of three deleted_by , downloaded_by , executed_by
+              default: deleted_by
+            downloaded_by:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+            deleted_by:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+
+            executed_by:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+            
+            context:
+              type: object
+              schema:
+                $ref: '#/definitions/rec_metadata'
+    responses:
+      200:
+        description: success string if metadata deletion is successful
+        schema:
+          id: rec_response
+          properties:
+            response_output:
+              type: integer
+              description: The id of the file with status
+              default: 123456
+      204:
+         description: Error deleting the value
+    """
+    data = {
+        "rec_response": 200
+    }
+    print(request.data)
+    # If the type == 'ADD': do the logic for add else update using the body parameters
+    # do the necessary updates to the database
+
+    # if the request.data.downloaded_by is true : delete the downloaded_by 
+    # elsif request.data.deleted_by is having records: delete the items 
+    # elif request.data.executed_by is having records : delete the items
+    return jsonify(data)
+
+
+@app.route("/v1/metadata/deleteall/<file_id>/", methods=['POST'],
+           endpoint="should_be_v1_only_metadata_deleteall")
+def delete_metadataall(file_id):
+
+    """
+    Deleting the metadata
+    Get a single item_type as  for the target_type
+    ---
+    tags:
+      - metadata
+    parameters:
+
+      - name: file_id
+        in: path
+        description: currently only "file_id" is supported
+        required: true
+        type: string
+        default: 101
+  
+    responses:
+      200:
+        description: success string if metadata deletion is successful
+        schema:
+          id: rec_response
+          properties:
+            response_output:
+              type: integer
+              description: The id of the file with status
+              default: 123456
+      204:
+         description: Error deleting the value
+    """
+    data = {
+        "rec_response": 200
+    }
+    return jsonify(data)
+  
+
 
 """
 This is to add cross origin site requests
