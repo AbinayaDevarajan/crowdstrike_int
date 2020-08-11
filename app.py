@@ -318,13 +318,13 @@ def add_metadata(file_id, item_type):
         description: currently only "file_id" is supported
         required: true
         type: string
-        default: candidate
+        default: 101
       - name: item_type
         in: path
         description: currently only "deleted_by , downloaded_by , executed_by" is supported
         required: true
         type: string
-        default: openings
+        default: downloaded_by
       - in: body
         name: body
         schema:
@@ -359,7 +359,6 @@ def add_metadata(file_id, item_type):
               default: 123456
       204:
          description: Error inserting the value
-    pass
     """
     pass
 
