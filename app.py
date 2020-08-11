@@ -2,6 +2,42 @@ from flask import Blueprint, Flask, jsonify
 from flasgger import Swagger
 from flasgger.utils import swag_from
 from flask.views import MethodView
+import sys
+sys.path.append('./utils')
+sys.path.append('./conf')
+sys.path.append('./common')
+from redis_utils import RedisUtils
+from config_utils import ConfigurationReader
+"""
+
+HMSET 100 file_id 100 file_name f_100 description desc1 platform A creation_time 11-08-2020-10:00:00
+HMSET 101 file_id 101 file_name f_101 description desc1 platform A creation_time 11-08-2020-10:00:00
+HMSET 102 file_id 102 file_name f_102 description desc1 platform A creation_time 11-08-2020-10:00:00
+HMSET 103 file_id 103 file_name f_103 description desc1 platform A creation_time 11-08-2020-10:00:00
+HMSET 104 file_id 104 file_name f_104 description desc1 platform A creation_time 11-08-2020-10:00:00
+
+HMSET 105 file_id 105 file_name f_105 description desc1 platform A deletion_time 11-08-2020-10:00:00
+HSET 100 downloaded_by
+
+"""
+
+class RedisConfigurationReader(ConfigurationReader):
+    def __init__(self, config_file):
+        super().__init__(config_file)
+
+    def get_redis_settings(self):
+        try:
+            return self.configuration["redis_cache_settings"]
+        except KeyError:
+            raise Exception(
+                'The  redis configurations are not configured, please configure in yml file'
+            )
+
+r = RedisUtils()
+config = RedisConfigurationReader('./conf/redis_settings.yml')
+config.read_config_file()
+r.strict_connect(**config.get_redis_settings())
+print(r.__dict__)
 
 app = Flask(__name__)
 
@@ -49,7 +85,7 @@ app.config['SWAGGER'] = {
 
 swag = Swagger(app)  # you can pass config here Swagger(config={})
 
-
+# file schema definitions 
 class FileAPI(MethodView):
 
     def get(self, file_id):
@@ -152,7 +188,7 @@ app.add_url_rule(
     endpoint='should_be_v1_only_post'
 )
 
-
+# app routes for the views
 @app.route('/v1/files/<int:file_id>/downloadspec', endpoint='should_be_v1_only_downloads')
 @swag_from('file_download_specs.yml')
 def get_download_specification(file_id):
@@ -170,6 +206,14 @@ def get_execution_specification(file_id):
 def get_deletion_specification(file_id):
     return jsonify({'file_name': "file_name"})
 
+
+# Add metadata about a file and its relationships to other files in the system
+
+
+
+"""
+This is to add cross origin site requests
+"""
 @app.after_request
 def allow_origin(response):
     response.headers['Access-Control-Allow-Origin'] = 'http://example.com'

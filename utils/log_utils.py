@@ -2,7 +2,12 @@ import logging
 import logging.config
 import time
 from functools import wraps
-
+import sys
+sys.path.append('./utils')
+sys.path.append('./conf')
+sys.path.append('./common')
+import redis 
+from redis import RedisError
 
 
 class LoggerManager:

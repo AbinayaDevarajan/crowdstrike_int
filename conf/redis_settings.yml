@@ -1,0 +1,8 @@
+
+redis_cache_settings:
+  host: 127.0.0.1
+  port: 6379
+  db: 0
+  username: 
+  password: 
+  client_name: redis-file_api-client

@@ -36,4 +36,4 @@ responses:
     schema:
       $ref: '#/definitions/File'
     examples:
-      -  {"name": "Fil01", "file_id": file_id,"platform" :"platform1", "creation_date":'12/10/2020-10:04:00'}
+      -  [{"name": "Fil01", "file_id": file_id,"platform" :"platform1", "creation_date":'12/10/2020-10:04:00'}]
