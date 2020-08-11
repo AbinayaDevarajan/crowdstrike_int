@@ -11,6 +11,7 @@ sys.path.append('./common')
 from redis_utils import RedisUtils
 from config_utils import ConfigurationReader
 import json
+import requests
 """
 
 HMSET 100 file_id 100 file_name f_100 description desc1 platform A creation_time 11-08-2020-10:00:00
@@ -298,6 +299,69 @@ def get_metadata_specification_v2(file_id):
     return json.dumps(output_result)
 
 
+"""
+API definitions for the 
+"""
+@app.route("/v1/metadata/<file_id>/<item_type>", methods=['POST'],
+           endpoint="should_be_v1_only_metadata_update")
+           
+def add_metadata(file_id, item_type):
+    """
+    Inserting the metadata
+    Get a single item_type as  for the target_type
+    ---
+    tags:
+      - metadata
+    parameters:
+      - name: file_id
+        in: path
+        description: currently only "file_id" is supported
+        required: true
+        type: string
+        default: candidate
+      - name: item_type
+        in: path
+        description: currently only "deleted_by , downloaded_by , executed_by" is supported
+        required: true
+        type: string
+        default: openings
+      - in: body
+        name: body
+        schema:
+          id: rec_metadata
+          required:
+            - type
+            - type_item
+          properties:
+            type:
+              type: integer
+              description: string which is out of three deleted_by , downloaded_by , executed_by
+              default: deleted_by
+            exclude:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+            context:
+              type: object
+              schema:
+                $ref: '#/definitions/rec_metadata'
+    responses:
+      200:
+        description: success string if metadata insert is successful
+        schema:
+          id: rec_response
+          properties:
+            opening_id:
+              type: integer
+              description: The id of the file with status
+              default: 123456
+      204:
+         description: Error inserting the value
+    pass
+    """
+    pass
 
 """
 This is to add cross origin site requests
