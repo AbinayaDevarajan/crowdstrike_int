@@ -5,6 +5,7 @@ from flask.views import MethodView
 import sys
 from collections import namedtuple
 import collections
+from flask import request
 sys.path.append('./utils')
 sys.path.append('./conf')
 sys.path.append('./common')
@@ -302,10 +303,20 @@ def get_metadata_specification_v2(file_id):
 """
 API definitions for the 
 """
-@app.route("/v1/metadata/<file_id>/<item_type>", methods=['POST'],
+
+
+"""
+Request Body
+  {
+    "downloaded_by": [101],
+    "executed_by": [102],
+    "deleted_by": [104]
+  }
+"""
+@app.route("/v1/metadata/<item_type>/<file_id>/", methods=['POST'],
            endpoint="should_be_v1_only_metadata_update")
            
-def add_metadata(file_id, item_type):
+def add_metadata(item_type,file_id):
     """
     Inserting the metadata
     Get a single item_type as  for the target_type
@@ -313,18 +324,20 @@ def add_metadata(file_id, item_type):
     tags:
       - metadata
     parameters:
-      - name: file_id
-        in: path
-        description: currently only "file_id" is supported
-        required: true
-        type: string
-        default: 101
+
       - name: item_type
         in: path
         description: currently only "deleted_by , downloaded_by , executed_by" is supported
         required: true
         type: string
         default: downloaded_by
+      - name: file_id
+        in: path
+        description: currently only "file_id" is supported
+        required: true
+        type: string
+        default: 101
+    
 
       - in: body
         name: body
@@ -338,12 +351,26 @@ def add_metadata(file_id, item_type):
               type: integer
               description: string which is out of three deleted_by , downloaded_by , executed_by
               default: deleted_by
-            exclude:
+            downloaded_by:
               type: array
               description: item_ids to insert in to  from type list
               default: [123, 101]
               items:
                   type: integer
+            deleted_by:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+
+            executed_by:
+              type: array
+              description: item_ids to insert in to  from type list
+              default: [123, 101]
+              items:
+                  type: integer
+            
             context:
               type: object
               schema:
@@ -361,7 +388,7 @@ def add_metadata(file_id, item_type):
       204:
          description: Error inserting the value
     """
-    pass
+    print(request.data)
 
 """
 This is to add cross origin site requests
