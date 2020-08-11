@@ -112,7 +112,7 @@ class FileAPI(MethodView):
                   description: description for file
                   default: File-<>
                 creation_date:
-                  type: datetime
+                  type: date-time
                   description: name for file
                   default: File-<>
                 platform:
@@ -151,6 +151,15 @@ app.add_url_rule(
     methods=['POST'],
     endpoint='should_be_v1_only_post'
 )
+
+
+@app.route('/v1/files/<int:file_id>/downloads', endpoint='should_be_v1_only_downloads')
+@swag_from('file_download_specs.yml')
+def fromfile_decorated(file_id):
+    return jsonify({'file_name': "file_name"})
+
+
+
 @app.after_request
 def allow_origin(response):
     response.headers['Access-Control-Allow-Origin'] = 'http://example.com'
