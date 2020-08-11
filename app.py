@@ -208,8 +208,26 @@ def get_deletion_specification(file_id):
 
 
 # Add metadata about a file and its relationships to other files in the system
-
-
+"""
+This is the test result end point to demonstrate the output
+"""
+@app.route('/v1/files/<int:file_id>/metadataspec', endpoint='should_be_v1_only_metadata')
+@swag_from('file_metadata_specs.yml')
+def get_metadata_specification(file_id):
+    return jsonify(
+          {
+            "download_specs": [
+                {"file_name":"Fil01", "file_id": file_id, "platform": "platform1", "creation_date": '12/10/2020-10:04:00'}
+            ],
+            "deletion_specs": [
+                {"file_name": "Fil01", "file_id": file_id,
+                    "platform": "platform1", "creation_date": '12/10/2020-10:04:00'}
+            ],
+            "execution_specs":[
+                {"file_name": "Fil01", "file_id": file_id,
+                    "platform": "platform1", "creation_date": '12/10/2020-10:04:00'}
+            ]}
+    )
 
 """
 This is to add cross origin site requests
