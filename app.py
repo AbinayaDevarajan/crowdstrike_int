@@ -325,6 +325,7 @@ def add_metadata(file_id, item_type):
         required: true
         type: string
         default: downloaded_by
+
       - in: body
         name: body
         schema:
@@ -353,7 +354,7 @@ def add_metadata(file_id, item_type):
         schema:
           id: rec_response
           properties:
-            opening_id:
+            response_output:
               type: integer
               description: The id of the file with status
               default: 123456
