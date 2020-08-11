@@ -412,7 +412,7 @@ def upsert_metadata(method_type,item_type, file_id):
         description: currently only "add, update" is supported
         required: true
         type: string
-        default: downloaded_by
+        default: add
 
       - name: item_type
         in: path
